@@ -1,6 +1,6 @@
 /*
 =============================
-Creating Databases(MySQl)
+Creating Databases(MsSql)
 =============================
 Script Purpose:
   This script creates new databases(Schemas) for each layer(Bronze, Silver, Gold) after checking if they already exists.
@@ -12,12 +12,30 @@ Warning:
 Script:
 */
   
--- drop databases if already exists
-drop database if exists Bronze;
-drop database if exists Silver;
-drop database if exists Gold;
+USE master;
+GO
 
--- recreate the databases(schemas)
-create database Bronze;
-create database Silver;
-create database Gold;
+-- Drop and recreate the 'DataWarehouse' database
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    ALTER DATABASE DataWarehouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE DataWarehouse;
+END;
+GO
+
+-- Create the 'DataWarehouse' database
+CREATE DATABASE DataWarehouse;
+GO
+
+USE DataWarehouse;
+GO
+
+-- Create Schemas
+CREATE SCHEMA bronze;
+GO
+
+CREATE SCHEMA silver;
+GO
+
+CREATE SCHEMA gold;
+GO
